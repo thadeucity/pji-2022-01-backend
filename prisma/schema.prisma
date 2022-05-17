@@ -1,0 +1,56 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Company {
+  id              String   @id @default(uuid())
+  name            String
+  email           String
+  password        String
+  logo            String?
+  phone           String
+  primary_color   String?
+  secondary_color String?
+  url             String   @unique
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+
+  CompaniesIngredients CompaniesIngredients[]
+  @@map("companies")
+}
+
+model Ingredient {
+  id          String   @id @default(uuid())
+  name        String
+  category    String
+  description String?
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  CompaniesIngredients CompaniesIngredients[]
+  @@map("ingredients")
+}
+
+model CompaniesIngredients {
+  id               String     @id @default(uuid())
+  companies        Company    @relation(fields: [fk_id_company], references: [id])
+  fk_id_company    String
+  ingredients      Ingredient @relation(fields: [fk_id_ingredient], references: [id])
+  fk_id_ingredient String
+  price_s          Int?
+  price_m          Int?
+  price_l          Int?
+  is_available     Boolean    @default(value: true)
+  created_at       DateTime   @default(now())
+  updated_at       DateTime   @updatedAt
+
+  @@map("companies_ingredients")
+}
