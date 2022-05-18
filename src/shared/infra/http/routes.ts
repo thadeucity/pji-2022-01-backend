@@ -1,15 +1,18 @@
-import {Router, Request, Response} from 'express';
+import { Router } from 'express';
 
-const companiesRouter = Router();
-
-companiesRouter.get('/', async (_request: Request, response: Response): Promise<Response> => {
-  return response.json({
-    message: 'Hello World',
-  });
-});
+import { companiesRouter } from '@modules/companies/http/routes/companies.routes';
+import { companiesRouter as pc } from '@modules/companies/http/routes/companiesPublic.routes';
 
 const routes = Router();
 
-routes.use('/companies', companiesRouter);
+const publicRoutes = Router();
+const privateRoutes = Router();
+
+publicRoutes.use('/companies', pc);
+privateRoutes.use('/companies', companiesRouter);
+
+
+routes.use('/public', publicRoutes);
+routes.use('/private', privateRoutes);
 
 export { routes };
