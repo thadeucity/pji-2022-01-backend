@@ -23,7 +23,7 @@ model Company {
   created_at      DateTime @default(now())
   updated_at      DateTime @updatedAt
 
-  CompaniesIngredients CompaniesIngredients[]
+  ingredients CompaniesIngredients[]
   @@map("companies")
 }
 
@@ -35,22 +35,24 @@ model Ingredient {
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
 
-  CompaniesIngredients CompaniesIngredients[]
+  companies CompaniesIngredients[]
   @@map("ingredients")
 }
 
 model CompaniesIngredients {
   id               String     @id @default(uuid())
-  companies        Company    @relation(fields: [fk_id_company], references: [id])
+  company          Company    @relation(fields: [fk_id_company], references: [id])
   fk_id_company    String
-  ingredients      Ingredient @relation(fields: [fk_id_ingredient], references: [id])
+  ingredient       Ingredient @relation(fields: [fk_id_ingredient], references: [id])
   fk_id_ingredient String
-  price_s          Int?
-  price_m          Int?
-  price_l          Int?
-  is_available     Boolean    @default(value: true)
-  created_at       DateTime   @default(now())
-  updated_at       DateTime   @updatedAt
+
+  price_s      Int?
+  price_m      Int?
+  price_l      Int?
+  is_available Boolean @default(value: true)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
   @@map("companies_ingredients")
 }
