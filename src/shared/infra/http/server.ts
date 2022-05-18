@@ -2,10 +2,11 @@ import 'reflect-metadata'
 
 import dotenv from 'dotenv'
 import cors from 'cors'
-
 import express, { Request, Response, NextFunction } from 'express';
 
 import { routes } from './routes';
+
+import '@shared/container';
 
 dotenv.config();
 
