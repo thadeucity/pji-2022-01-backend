@@ -23,6 +23,17 @@ class FakeCompaniesRepository implements ICompaniesRepository {
     return foundCompany || null;
   }
 
+  public async findBy(props: Partial<Omit<Company, 'password'>>): Promise<Company | null> {
+    const foundCompany = this.companies.find(company => {
+      return Object.keys(props).every((key) => {
+        const safeKey = key as keyof typeof props;
+        return company[safeKey] === props[safeKey]
+      });
+    });
+
+    return foundCompany || null;
+  }
+
   public async create(userData: ICreateCompanyDTO): Promise<Company> {
     const company: Company = {
       id: uuid(),
@@ -36,14 +47,17 @@ class FakeCompaniesRepository implements ICompaniesRepository {
     return company;
   }
 
-  public async save(updatedCompany: Company): Promise<Company> {
+  public async update(updatedCompany: Partial<Company>): Promise<Company> {
     const findIndex = this.companies.findIndex(
       company => company.id === updatedCompany.id
     );
 
-    this.companies[findIndex] = updatedCompany;
+    this.companies[findIndex] = {
+      ...this.companies[findIndex],
+      ...updatedCompany,
+    };
 
-    return updatedCompany;
+    return this.companies[findIndex];
   }
 
   public async delete(id: string): Promise<string> {

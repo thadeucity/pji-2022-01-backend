@@ -10,20 +10,20 @@ export class IngredientsPublicController {
     const ingredients = await prisma.companiesIngredients.findMany({
       where: { fk_id_company: companyId },
       include: {
-        ingredients: true
+        ingredient: true
       }
     });
 
-    const safeIngredients = ingredients.map(ingredient => {
+    const safeIngredients = ingredients.map(ingredientRelation => {
       return {
-        id: ingredient.ingredients.id,
-        name: ingredient.ingredients.name,
-        description: ingredient.ingredients.description,
-        category: ingredient.ingredients.category,
+        id: ingredientRelation.ingredient.id,
+        name: ingredientRelation.ingredient.name,
+        description: ingredientRelation.ingredient.description,
+        category: ingredientRelation.ingredient.category,
         prices: {
-          small: ingredient.price_s,
-          medium: ingredient.price_m,
-          large: ingredient.price_l,
+          small: ingredientRelation.price_s,
+          medium: ingredientRelation.price_m,
+          large: ingredientRelation.price_l,
         }
       }
     })

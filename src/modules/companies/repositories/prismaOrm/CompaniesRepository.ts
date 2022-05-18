@@ -27,6 +27,11 @@ class CompaniesRepository implements ICompaniesRepository {
     return foundCompany;
   }
 
+  public async findBy(props: Partial<Omit<Company, 'password'>>): Promise<Company | null> {
+    const foundCompany = await this.ormRepository.findFirst({ where: props });
+    return foundCompany;
+  }
+
   public async create(companyData: ICreateCompanyDTO): Promise<Company> {
     const newCompany = this.ormRepository.create({
       data: { ...companyData }
@@ -35,10 +40,10 @@ class CompaniesRepository implements ICompaniesRepository {
     return newCompany;
   }
 
-  public async save(company: Company): Promise<Company> {
+  public async update(payload: Partial<Company>): Promise<Company> {
     return this.ormRepository.update({
-      where: { id: company.id },
-      data: company
+      where: { id: payload.id },
+      data: payload
     });
   }
 
