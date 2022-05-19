@@ -1,18 +1,26 @@
 import { Request, Response } from "express";
 import { PrismaClient } from '@prisma/client'
+import { BrowseIngredientsService } from "@modules/ingredients/services/BrowseIngredientsService";
+import { container } from "tsyringe";
+import { ReadIngredientsService } from "@modules/ingredients/services/ReadIngredientsService";
+import { EditIngredientService } from "@modules/ingredients/services/EditIngredientService";
+import { CreateIngredientService } from "@modules/ingredients/services/CreateIngredientService";
+import { DeleteIngredientService } from "@modules/ingredients/services/DeleteIngredientService";
 
 const prisma = new PrismaClient()
 
 export class IngredientsController {
   public async browse(req: Request, res: Response): Promise<Response> {
-    const { category } = req.query || {};
+    const { category, name } = req.query || {};
 
-    const safeCategory = (String(category) || '').toLowerCase();
+    const safeCategory = category ? category.toString().toLowerCase() : undefined;
+    const safeName = name ? name.toString() : undefined;
 
-    const ingredients = await prisma.ingredient.findMany({
-      where: {
-        category: safeCategory || undefined,
-      }
+    const browseIngredients = container.resolve(BrowseIngredientsService);
+
+    const ingredients = await browseIngredients.execute({
+      category: safeCategory,
+      name: safeName
     });
 
     return res.json(ingredients);
@@ -21,13 +29,9 @@ export class IngredientsController {
   public async read(req: Request, res: Response): Promise<Response> {
     const { id } = req.params || {};
 
-    const ingredient = await prisma.ingredient.findUnique({where: {id}});
+    const readIngredient = container.resolve(ReadIngredientsService);
 
-    if (!ingredient) {
-      return res.status(404).json({
-        message: 'ingredient not found'
-      })
-    }
+    const ingredient = await readIngredient.execute({ id });
 
     return res.json({
       id: ingredient.id,
@@ -38,37 +42,29 @@ export class IngredientsController {
   }
 
   public async edit(req: Request, res: Response): Promise<Response> {
-      const { id } = req.params || {};
+    const { id } = req.params || {};
 
-      const {
-        name,
-        description,
-        category,
-      } = req.body || {};
+    const {
+      name,
+      description,
+      category,
+    } = req.body || {};
 
-      const ingredient = await prisma.ingredient.findUnique({where: {id}});
+    const editIngredient = container.resolve(EditIngredientService);
 
-      if (!ingredient) {
-        return res.status(404).json({
-          message: 'ingredient not found'
-        })
-      }
+    const updatedIngredient = await editIngredient.execute({
+      id,
+      category,
+      description,
+      name
+    })
 
-      const updatedIngredient = await prisma.ingredient.update({
-        where: {id},
-        data: {
-          name: name || ingredient.name,
-          description: description || ingredient.description,
-          category: category || ingredient.category,
-        }
-      })
-
-      return res.json({
-        id: updatedIngredient.id,
-        name: updatedIngredient.name,
-        description: updatedIngredient.description,
-        category: updatedIngredient.category,
-      })
+    return res.json({
+      id: updatedIngredient.id,
+      name: updatedIngredient.name,
+      description: updatedIngredient.description,
+      category: updatedIngredient.category,
+    })
   }
 
   public async add(req: Request, res: Response): Promise<Response> {
@@ -78,37 +74,31 @@ export class IngredientsController {
       category,
     } = req.body || {};
 
-    const ingredient = await prisma.ingredient.create({
-      data: {
-        name,
-        description,
-        category,
-      }
+    const createIngredient = container.resolve(CreateIngredientService);
+
+    const newIngredient = await createIngredient.execute({
+      category,
+      description,
+      name
     })
 
     return res.json({
-      id: ingredient.id,
-      name: ingredient.name,
-      description: ingredient.description,
-      category: ingredient.category,
+      id: newIngredient.id,
+      name: newIngredient.name,
+      description: newIngredient.description,
+      category: newIngredient.category,
     })
   }
 
   public async delete(req: Request, res: Response): Promise<Response> {
     const { id } = req.params || {};
 
-    const ingredient = await prisma.ingredient.findUnique({where: {id}});
+    const deleteIngredient = container.resolve(DeleteIngredientService);
 
-    if (!ingredient) {
-      return res.status(404).json({
-        message: 'ingredient not found'
-      })
-    }
-
-    await prisma.ingredient.delete({where: {id}});
+    const deletedIngredient = await deleteIngredient.execute({ id })
 
     return res.json({
-      message: 'ingredient deleted'
+      message: 'Ingredient deleted: ' + deletedIngredient
     })
   }
 }
