@@ -1,106 +1,49 @@
 import { Request, Response } from "express";
-import { PrismaClient } from '@prisma/client'
+import { container } from "tsyringe";
 
-const prisma = new PrismaClient()
+import { CreateCompanyIngredientService } from "@modules/ingredients/services/CreateCompanyIngredientService";
+import { EditCompanyIngredientService } from "@modules/ingredients/services/EditCompanyIngredientService";
 
 export class IngredientCompanyController {
-  public async setPrice(req: Request, res: Response): Promise<Response> {
-    const { companyId, ingredientId } = req.params || {};
+  public async add(req: Request, res: Response): Promise<Response> {
+    const { ingredientId } = req.params || {};
+    const { id: companyId } = req.company || {};
 
     const {
-      small,
-      medium,
-      large,
-    } = req.body || {};
+      prices,
+      isAvailable,
+    } = req.body || {}
 
-    const company = await prisma.company.findUnique({where: {id: companyId}});
+    const createCompanyIngredient = container.resolve(CreateCompanyIngredientService);
 
-    if (!company) {
-      return res.status(404).json({
-        message: 'company not found'
-      })
-    }
-
-    const ingredient = await prisma.ingredient.findUnique({where: {id: ingredientId}});
-
-    if (!ingredient) {
-      return res.status(404).json({
-        message: 'ingredient not found'
-      })
-    }
-
-    const priceRelation = await prisma.companiesIngredients.findFirst({
-      where: {
-        fk_id_company: companyId,
-        fk_id_ingredient: ingredientId,
-      }
+    const companyIngredient = await createCompanyIngredient.execute({
+      ingredientId,
+      companyId,
+      prices,
+      isAvailable
     })
 
-    if (!priceRelation) {
-      const newPriceRelation = await prisma.companiesIngredients.create({
-        data: {
-          fk_id_company: companyId,
-          fk_id_ingredient: ingredientId,
-          price_s: small,
-          price_m: medium,
-          price_l: large,
-        }
-      })
-
-      return res.json({
-        id: newPriceRelation.id,
-      })
-    } else {
-      const updatedPriceRelation = await prisma.companiesIngredients.update({
-        where: {
-          id: priceRelation.id,
-        },
-        data: {
-          price_s: small,
-          price_m: medium,
-          price_l: large,
-        }
-      })
-
-      return res.json({
-        id: updatedPriceRelation.id,
-      })
-    }
-
+    return res.json({ id: companyIngredient.id })
   }
 
-  public async setAvailability(req: Request, res: Response): Promise<Response> {
-    const { companyId, ingredientId } = req.params || {};
+  public async edit(req: Request, res: Response): Promise<Response> {
+    const { companyIngredientId } = req.params || {};
+    const { id: companyId } = req.company || {};
 
     const {
+      prices,
       isAvailable,
-    } = req.body || {};
+    } = req.body || {}
 
-    const conpanyIngredient = await prisma.companiesIngredients.findFirst({
-      where: {
-        fk_id_company: companyId,
-        fk_id_ingredient: ingredientId,
-      }
+    const editCompanyIngredient = container.resolve(EditCompanyIngredientService);
+
+    const companyIngredient = await editCompanyIngredient.execute({
+      id: companyIngredientId,
+      companyId,
+      prices,
+      isAvailable
     })
 
-    if(!conpanyIngredient) {
-      return res.status(404).json({
-        message: 'company ingredient not found'
-      })
-    }
-
-    const updatedCompanyIngredient = await prisma.companiesIngredients.update({
-      where: {
-        id: conpanyIngredient.id,
-      },
-      data: {
-        is_available: isAvailable,
-      }
-    })
-
-    return res.json({
-      id: updatedCompanyIngredient.id,
-      newAvailability: updatedCompanyIngredient.is_available,
-    })
+    return res.json({ id: companyIngredient.id })
   }
 }
