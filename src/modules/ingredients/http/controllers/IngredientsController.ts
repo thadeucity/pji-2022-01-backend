@@ -1,13 +1,11 @@
 import { Request, Response } from "express";
-import { PrismaClient } from '@prisma/client'
-import { BrowseIngredientsService } from "@modules/ingredients/services/BrowseIngredientsService";
 import { container } from "tsyringe";
+
+import { BrowseIngredientsService } from "@modules/ingredients/services/BrowseIngredientsService";
 import { ReadIngredientsService } from "@modules/ingredients/services/ReadIngredientsService";
 import { EditIngredientService } from "@modules/ingredients/services/EditIngredientService";
 import { CreateIngredientService } from "@modules/ingredients/services/CreateIngredientService";
 import { DeleteIngredientService } from "@modules/ingredients/services/DeleteIngredientService";
-
-const prisma = new PrismaClient()
 
 export class IngredientsController {
   public async browse(req: Request, res: Response): Promise<Response> {

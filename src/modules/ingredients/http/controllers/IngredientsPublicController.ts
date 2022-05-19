@@ -1,36 +1,23 @@
 import { Request, Response } from "express";
-import { PrismaClient } from '@prisma/client'
+import { container } from "tsyringe";
 
-const prisma = new PrismaClient()
+import { PublicBrowseIngredientsService } from "@modules/ingredients/services/PublicBrowseIngredientsService";
 
 export class IngredientsPublicController {
   public async browseByCompany(req: Request, res: Response): Promise<Response> {
     const { companyId } = req.params || {};
+    const { category } = req.query || {};
 
-    const ingredients = await prisma.companiesIngredients.findMany({
-      where: { fk_id_company: companyId },
-      include: {
-        ingredient: true
-      }
+    const safeCategory = category ? category.toString().toLowerCase() : undefined;
+
+    const browseIngredients = container.resolve(PublicBrowseIngredientsService);
+
+    const ingredients = await browseIngredients.execute({
+      companyId: companyId,
+      category: safeCategory
     });
 
-    const safeIngredients = ingredients.map(ingredientRelation => {
-      return {
-        id: ingredientRelation.ingredient.id,
-        name: ingredientRelation.ingredient.name,
-        description: ingredientRelation.ingredient.description,
-        category: ingredientRelation.ingredient.category,
-        prices: {
-          small: ingredientRelation.price_s,
-          medium: ingredientRelation.price_m,
-          large: ingredientRelation.price_l,
-        }
-      }
-    })
 
-
-    return res.json({
-      ingredients: safeIngredients
-    })
+    return res.json({ ingredients })
   }
 }
