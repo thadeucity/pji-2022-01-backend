@@ -7,7 +7,7 @@ import {
 } from '@modules/companies/services/AuthenticateCompanyService';
 
 export class CompaniesSessionController {
-  public async read(req: Request, res: Response): Promise<Response> {
+  public async add(req: Request, res: Response): Promise<Response> {
     const { email, password } = req.body || {};
 
     const authenticateCompany = container.resolve(AuthenticateCompanyService);

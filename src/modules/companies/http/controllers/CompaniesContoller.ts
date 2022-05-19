@@ -7,6 +7,7 @@ import { ReadCompanyService } from '@modules/companies/services/ReadCompanyServi
 import { EditCompanyService } from '@modules/companies/services/EditCompanyService';
 import { DeleteCompanyService } from "@modules/companies/services/DeleteCompanyService";
 import { EditCompanyPasswordService } from "@modules/companies/services/EditCompanyPasswordService";
+import AppError from "@shared/errors/AppError";
 
 export class CompaniesController {
   public async read(req: Request, res: Response): Promise<Response> {
@@ -20,7 +21,12 @@ export class CompaniesController {
   }
 
   public async edit(req: Request, res: Response): Promise<Response> {
-      const { id } = req.params || {};
+    const { id } = req.params || {};
+    const { id: reqId } = req.company || {};
+
+    if(id !== reqId) {
+      throw new AppError('You can only edit your own company', 401);
+    }
 
     const editCompany = container.resolve(EditCompanyService);
 
@@ -52,6 +58,11 @@ export class CompaniesController {
 
   public async editPassword(req: Request, res: Response): Promise<Response> {
     const { id } = req.params || {};
+    const { id: reqId } = req.company || {};
+
+    if(id !== reqId) {
+      throw new AppError('You can only edit your own company', 401);
+    }
 
     const { password } = req.body || {};
 
@@ -100,6 +111,11 @@ export class CompaniesController {
 
   public async delete(req: Request, res: Response): Promise<Response> {
     const { id } = req.params || {};
+    const { id: reqId } = req.company || {};
+
+    if(id !== reqId) {
+      throw new AppError('You can only delete your own company', 401);
+    }
 
     const deleteCompany = container.resolve(DeleteCompanyService);
 

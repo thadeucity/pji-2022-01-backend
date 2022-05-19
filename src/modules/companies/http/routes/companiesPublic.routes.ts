@@ -2,9 +2,9 @@ import {Router} from 'express';
 
 import {CompaniesPublicController} from '../controllers/CompaniesPublicController'
 
-const companiesRouter = Router();
+const companiesPublicRouter = Router();
 const companiesPublicController = new CompaniesPublicController();
 
-companiesRouter.get('/:url', companiesPublicController.readByUrl);
+companiesPublicRouter.get('/:url', companiesPublicController.readByUrl);
 
-export {companiesRouter};
+export {companiesPublicRouter};
