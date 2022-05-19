@@ -7,6 +7,8 @@ import { IUpdateCompanyIngredientDTO } from '../dtos/IUpdateCompanyIngredientDTO
 import { IIngredientWithPrice } from '../dtos/IIngredientWithPrice';
 
 export interface ICompaniesIngredientsRepository {
+  findById(id: string): Promise<CompaniesIngredients | null>;
+  findBy(data: Partial<CompaniesIngredients>): Promise<CompaniesIngredients | null>;
   findAllByCompanyId(companyId: string): Promise<IIngredientWithPrice[]>;
 
   create(data: ICreateCompanyIngredientDTO): Promise<CompaniesIngredients>;

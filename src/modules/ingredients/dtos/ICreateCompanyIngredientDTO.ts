@@ -1,10 +1,10 @@
 export interface ICreateCompanyIngredientDTO {
   companyId: string;
   ingredientId: string;
-  isAvailable: boolean;
+  isAvailable?: boolean;
   prices: {
-    small: number;
-    medium: number;
-    large: number;
+    small?: number | null;
+    medium?: number | null;
+    large?: number | null;
   }
 }

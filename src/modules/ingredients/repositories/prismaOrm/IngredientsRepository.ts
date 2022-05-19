@@ -17,9 +17,14 @@ export class IngredientsRepository implements IIngredientsRepository {
     return foundIngredient;
   }
 
-  public async findAllByCategory(category: string): Promise<Ingredient[]> {
-    const foundIngredient = await this.ormRepository.findMany({ where: { category } });
+  public async findBy(data: Partial<Ingredient>): Promise<Ingredient | null> {
+    const foundIngredient = await this.ormRepository.findFirst({ where: data });
     return foundIngredient;
+  }
+
+  public async findAllBy(data: Partial<Ingredient>): Promise<Ingredient[]> {
+    const foundIngredients = await this.ormRepository.findMany({ where: data });
+    return foundIngredients;
   }
 
   public async create(ingredientData: ICreateIngredientDTO): Promise<Ingredient> {

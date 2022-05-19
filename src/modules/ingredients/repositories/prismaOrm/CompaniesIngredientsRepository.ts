@@ -16,6 +16,28 @@ export class CompaniesIngredientsRepository implements ICompaniesIngredientsRepo
     this.ormRepository = new PrismaClient().companiesIngredients;
   }
 
+  public async findById(id: string): Promise<CompaniesIngredients | null> {
+    const foundIngredient = await this.ormRepository.findFirst({
+      where: { id },
+      include: {
+        ingredient: true
+      }
+    });
+
+    return foundIngredient
+  }
+
+  public async findBy(data: Partial<CompaniesIngredients>): Promise<CompaniesIngredients | null> {
+    const foundIngredient = await this.ormRepository.findFirst({
+      where: data,
+      include: {
+        ingredient: true
+      }
+    });
+
+    return foundIngredient
+  }
+
   public async findAllByCompanyId(companyId: string): Promise<IIngredientWithPrice[]> {
     const foundIngredients = await this.ormRepository.findMany({
       where: { fk_id_company: companyId },

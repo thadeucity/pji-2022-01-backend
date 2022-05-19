@@ -1,9 +1,9 @@
 export interface IUpdateCompanyIngredientDTO {
   id: string;
-  isAvailable: boolean;
-  prices: {
-    small: number;
-    medium: number;
-    large: number;
+  isAvailable?: boolean;
+  prices?: {
+    small?: number | null;
+    medium?: number | null;
+    large?: number | null;
   }
 }
