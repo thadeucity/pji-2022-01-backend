@@ -22,6 +22,7 @@ export class CompaniesPublicController {
     }
 
     return res.json({
+      id: company.id,
       name: company.name,
       email: company.email,
       logo: company.logo,

@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { PrismaClient } from '@prisma/client'
 import { container } from 'tsyringe';
 
 import { CreateCompanyService } from '@modules/companies/services/CreateCompanyService';

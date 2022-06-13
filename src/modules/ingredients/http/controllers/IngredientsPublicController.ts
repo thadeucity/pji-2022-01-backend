@@ -18,6 +18,6 @@ export class IngredientsPublicController {
     });
 
 
-    return res.json({ ingredients })
+    return res.json(ingredients)
   }
 }
