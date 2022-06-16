@@ -5,6 +5,6 @@ import {CompaniesSessionController} from '../controllers/CompaniesSessionControl
 const sessionRouter = Router();
 const sessionController = new CompaniesSessionController();
 
-sessionRouter.post('/', (req, res) => res.send('Hello World!'));
+sessionRouter.post('/', sessionController.add);
 
 export { sessionRouter };
