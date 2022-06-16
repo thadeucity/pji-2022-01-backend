@@ -24,6 +24,8 @@ export default function ensureAuthenticated(
 
   const [, token] = authHeader.split(' ');
 
+  console.log({token})
+
   try {
     const decoded = verify(token, authConfig.jwt.secret);
 
