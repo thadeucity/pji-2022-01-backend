@@ -34,6 +34,8 @@ export class AuthenticateCompanyService {
   public async execute({ email, password }: IRequest): Promise<IResponse> {
     const company = await this.companies.findByEmail(email);
 
+    console.log({company})
+
     if (!company) {
       throw new AppError('Incorrect email/password combination.', 401);
     }
@@ -41,19 +43,25 @@ export class AuthenticateCompanyService {
     const passwordMatched = await this.hashProvider.compareHash(
       password,
       company.password,
-    );
+      );
 
-    if (!passwordMatched) {
-      throw new AppError('Incorrect email/password combination.', 401);
-    }
+      console.log({passwordMatched})
 
-    // User Authenticated
-    const { secret, expiresIn } = authConfig.jwt;
+      if (!passwordMatched) {
+        throw new AppError('Incorrect email/password combination.', 401);
+      }
+
+      // User Authenticated
+      const { secret, expiresIn } = authConfig.jwt;
+
+      console.log({secret, expiresIn})
 
     const token = sign({}, secret, {
       subject: company.id,
       expiresIn,
     });
+
+    console.log({token})
 
     return {
       company: {
