@@ -8,7 +8,7 @@ import ensureAuthenticated from '@modules/companies/http/middlewares/ensureAuthe
 
 const privateRoutes = Router();
 
-// privateRoutes.use(ensureAuthenticated);
+privateRoutes.use(ensureAuthenticated);
 
 privateRoutes.use('/companies', companiesRouter);
 privateRoutes.use('/ingredients', ingredientsRouter);
