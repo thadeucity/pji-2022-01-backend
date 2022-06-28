@@ -1,18 +1,53 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, Company } from '@prisma/client'
 import { resetDatabase } from "./resetDatabase"
+import BCryptHashProvider from '../providers/HashProvider/implementations/BCryptHashProvider'
 
-const companies = [
-  {
-    name: "Bolos do João",
-    email: "joão@mail.com",
-    password: "1234",
-    logo: "http://localhost:3333/images/866fa8bbdb2e495d98cad65a36ee3491.png",
-    phone: "5516996381316",
-    primary_color: "#ff9000",
-    secondary_color: "#AA2055",
-    url: "localhost:3000",
-  }
-]
+
+const HashProviver = new BCryptHashProvider()
+
+const createCompaniesData: () => Promise<Omit<Company, 'created_at' | 'updated_at' | 'id'>[]> = async () => {
+  const passwordHash = await HashProviver.generateHash('1234')
+  const [ env = 'develop' ] = process.argv.slice(2);
+
+  const imgEnv = env === 'prod'
+    ? 'https://pjiapi.soapmanager.com'
+    : 'http://localhost:3333'
+
+  return [
+    {
+      name: "Bolos do João",
+      email: "joão@mail.com",
+      password: passwordHash,
+      logo: `${imgEnv}/images/866fa8bbdb2e495d98cad65a36ee3491.png`,
+      phone: "5516996381316",
+      primary_color: "#9188E5",
+      secondary_color: "#5D52C9",
+      url: env === 'prod' ? 'bolos-do-joao.vercel.app' : 'http://localhost:3000',
+      about: `Os melhores bolos da região de Ribeirão Preto.
+
+  Bolos caseiros feitos com muito amor, entregues direto na sua casa.
+  Trabalho com ingredientes de primeira qualidade para te entregar produtos de dar água na boca.
+  Possuo mais de 20 anos de experiência na confecção de bolos e garanto que você não irá se arrepender.`,
+      profile_image: `${imgEnv}/images/joao.jpg`,
+    },
+    {
+      name: "Maria's Cake",
+      email: "maria@mail.com",
+      password: passwordHash,
+      logo: `${imgEnv}/images/bb56d8325f494e7fbfe947b49dfe84ae.png`,
+      phone: "5516996381316",
+      primary_color: "#F28AA5",
+      secondary_color: "#fe4b74",
+      url: env === 'prod' ? 'marias-cake.vercel.app' : 'http://localhost:3001',
+      about: `Bolos feitos com muito carinho para você.
+
+  Bolos artesanais feitos com muito amor, pertinho de você.
+  Os bolos mais gostosos de toda a região de Ribeirão Preto, preparados com os melhores ingredientes.
+  Tenho certeza que você irá se surpreender com meus bolos.`,
+      profile_image: `${imgEnv}/images/maria.jpg`,
+    }
+  ]
+}
 
 const baseIngredients = [
   {
@@ -49,8 +84,8 @@ const fillingIngredients = [
     category: "filling",
   },
   {
-    name: "Leite condençado",
-    description: "Recheio creme de leite condençado",
+    name: "Leite condensado",
+    description: "Recheio creme de leite condensado",
     category: "filling",
   },
   {
@@ -166,8 +201,10 @@ let companiesIds: string[] = []
 const createCompanies = async () => {
   const prismaClient = new PrismaClient()
 
+  const companies = await createCompaniesData()
+
   for (const company of companies) {
-    const createdCompany = await prismaClient.company.create({ data: company })
+    const createdCompany = await prismaClient.company.create({ data: {...company} })
     companiesIds.push(createdCompany.id)
   }
 
@@ -235,13 +272,22 @@ const assignPrices = async () => {
         price_l: l
       }})
     }
+
+    console.log(`Prices assigned to company: ${companyId}`)
   }
 
-  console.log('Prices assigned')
+  console.log('All Prices assigned')
 }
 
 
+
+
+
 const run = async () => {
+  const [ env = 'develop' ] = process.argv.slice(2);
+
+  console.log(`Starting seed script for ${env} environment`)
+
   await resetDatabase()
   await createCompanies()
   await createIngredients()
