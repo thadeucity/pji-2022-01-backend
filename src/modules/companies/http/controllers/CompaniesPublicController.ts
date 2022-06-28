@@ -28,7 +28,9 @@ export class CompaniesPublicController {
       logo: company.logo,
       phone: company.phone,
       primaryColor: company.primary_color,
-      secondaryColor: company.secondary_color
+      secondaryColor: company.secondary_color,
+      about: company.about,
+      profilePicture: company.profile_image
     })
   }
 }

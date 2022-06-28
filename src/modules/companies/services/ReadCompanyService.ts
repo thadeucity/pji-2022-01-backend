@@ -17,6 +17,8 @@ interface IResponse {
   logo: string | null
   primaryColor: string | null
   secondaryColor: string | null
+  about: string | null
+  profilePicture: string | null
 }
 
 @injectable()
@@ -42,6 +44,8 @@ export class ReadCompanyService {
       logo: company.logo,
       primaryColor: company.primary_color,
       secondaryColor: company.secondary_color,
+      about: company.about,
+      profilePicture: company.profile_image,
     };
   }
 }

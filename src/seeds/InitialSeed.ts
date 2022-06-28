@@ -22,12 +22,11 @@ const createCompaniesData: () => Promise<Omit<Company, 'created_at' | 'updated_a
       phone: "5516996381316",
       primary_color: "#9188E5",
       secondary_color: "#5D52C9",
-      url: env === 'prod' ? 'bolos-do-joao.vercel.app' : 'http://localhost:3000',
-      about: `Os melhores bolos da região de Ribeirão Preto.
-
-  Bolos caseiros feitos com muito amor, entregues direto na sua casa.
-  Trabalho com ingredientes de primeira qualidade para te entregar produtos de dar água na boca.
-  Possuo mais de 20 anos de experiência na confecção de bolos e garanto que você não irá se arrepender.`,
+      url: env === 'prod' ? 'bolos-do-joao.vercel.app' : 'localhost:3000',
+      about: `*Os melhores bolos da região de Ribeirão Preto.*
+Bolos caseiros feitos com muito amor, entregues direto na sua casa.
+Trabalho com ingredientes de primeira qualidade para te entregar produtos de dar água na boca.
+Possuo mais de 20 anos de experiência na confecção de bolos e garanto que você não irá se arrepender.`,
       profile_image: `${imgEnv}/images/joao.jpg`,
     },
     {
@@ -38,12 +37,11 @@ const createCompaniesData: () => Promise<Omit<Company, 'created_at' | 'updated_a
       phone: "5516996381316",
       primary_color: "#F28AA5",
       secondary_color: "#fe4b74",
-      url: env === 'prod' ? 'marias-cake.vercel.app' : 'http://localhost:3001',
-      about: `Bolos feitos com muito carinho para você.
-
-  Bolos artesanais feitos com muito amor, pertinho de você.
-  Os bolos mais gostosos de toda a região de Ribeirão Preto, preparados com os melhores ingredientes.
-  Tenho certeza que você irá se surpreender com meus bolos.`,
+      url: env === 'prod' ? 'marias-cake.vercel.app' : 'localhost:3001',
+      about: `*Bolos feitos com muito carinho para você.*
+Bolos artesanais feitos com muito amor, pertinho de você.
+Os bolos mais gostosos de toda a região de Ribeirão Preto, preparados com os melhores ingredientes.
+Tenho certeza que você irá se surpreender com meus bolos.`,
       profile_image: `${imgEnv}/images/maria.jpg`,
     }
   ]
