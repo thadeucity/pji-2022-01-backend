@@ -8,6 +8,7 @@
     "strictPropertyInitialization": false,
     "baseUrl": "./src",
     "allowJs": true,
+    "types": ["jest"],
     "paths": {
       "@modules/*": ["modules/*"],
       "@config/*": ["config/*"],

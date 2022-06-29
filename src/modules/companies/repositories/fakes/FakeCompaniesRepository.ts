@@ -39,6 +39,8 @@ class FakeCompaniesRepository implements ICompaniesRepository {
       id: uuid(),
       created_at: new Date(),
       updated_at: new Date(),
+      about: null,
+      profile_image: null,
       ...userData,
     };
 
